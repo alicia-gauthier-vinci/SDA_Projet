@@ -1,4 +1,5 @@
 public class Mention {
+
   private int sourceId;
   private int targetId;
   private double weight;

@@ -50,6 +50,49 @@ public class Graph {
     int sourceId = trouverIdParNom(source);
     int destinationId = trouverIdParNom(destination);
 
+    Map<Integer, Integer> predecessors = new HashMap<>();
+    Queue<Integer> queue = new LinkedList<>();
+    Set<Integer> visited = new HashSet<>();
+
+    queue.add(sourceId);
+    visited.add(sourceId);
+
+    while (!queue.isEmpty()) {
+      int currentId = queue.poll();
+
+      if (currentId == destinationId) break;
+
+      for (Mention neighbor : adjList.getOrDefault(currentId, new ArrayList<>())) {
+        int neighborId = neighbor.getTargetId();
+        if (!visited.contains(neighborId)) {
+          visited.add(neighborId);
+          predecessors.put(neighborId, currentId);
+          queue.add(neighborId);
+        }
+      }
+    }
+
+    afficherCheminEtLongueur(sourceId, destinationId, predecessors);
+  }
+
+  private void afficherCheminEtLongueur(int sourceId, int destinationId, Map<Integer, Integer> predecessors) {
+    List<Integer> chemin = new ArrayList<>();
+    for (Integer at = destinationId; at != null; at = predecessors.get(at)) {
+      chemin.add(at);
+    }
+    Collections.reverse(chemin);
+
+    System.out.println("Longueur du chemin : " + (chemin.size() - 1));
+    System.out.println("Chemin :");
+    for (int id : chemin) {
+      System.out.println(artistes.get(id));
+    }
+  }
+
+  public void trouverCheminMaxMentions(String source, String destination) {
+    int sourceId = trouverIdParNom(source);
+    int destinationId = trouverIdParNom(destination);
+
     Map<Integer, Double> distances = new HashMap<>();
     Map<Integer, Integer> predecessors = new HashMap<>();
     PriorityQueue<Mention> priorityQueue = new PriorityQueue<>(Comparator.comparingDouble(Mention::getWeight));
@@ -78,19 +121,10 @@ public class Graph {
       }
     }
 
-    afficherCheminEtCout(sourceId, destinationId, distances, predecessors);
+    afficherCheminEtMentions(sourceId, destinationId, distances, predecessors);
   }
 
-  private int trouverIdParNom(String nom) {
-    for (Artist artiste : artistes.values()) {
-      if (artiste.getNom().equals(nom)) {
-        return artiste.getId();
-      }
-    }
-    throw new IllegalArgumentException("Artiste non trouvé : " + nom);
-  }
-
-  private void afficherCheminEtCout(int sourceId, int destinationId, Map<Integer, Double> distances, Map<Integer, Integer> predecessors) {
+  private void afficherCheminEtMentions(int sourceId, int destinationId, Map<Integer, Double> distances, Map<Integer, Integer> predecessors) {
     List<Integer> chemin = new ArrayList<>();
     for (Integer at = destinationId; at != null; at = predecessors.get(at)) {
       chemin.add(at);
@@ -104,8 +138,14 @@ public class Graph {
       System.out.println(artistes.get(id));
     }
   }
-
-  public void trouverCheminMaxMentions(String source, String destination) {
-    // Implémenter l'algorithme de recherche ici
+  private int trouverIdParNom(String nom) {
+    for (Artist artiste : artistes.values()) {
+      if (artiste.getNom().equals(nom)) {
+        return artiste.getId();
+      }
+    }
+    throw new IllegalArgumentException("Artiste non trouvé : " + nom);
   }
+
+
 }
