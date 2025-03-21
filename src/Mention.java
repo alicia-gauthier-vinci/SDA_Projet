@@ -1,26 +1,17 @@
 public class Mention {
+  private int targetId;
+  private int weight;
 
-  private Artist artist1;
-  private Artist artist2;
-  private int nbMentions;
-
-  public Mention(Artist artist1, Artist artist2, int nbMentions) {
-    this.artist1 = artist1;
-    this.artist2 = artist2;
-    this.nbMentions = nbMentions;
+  public Mention(int targetId, int weight) {
+    this.targetId = targetId;
+    this.weight = weight;
   }
 
-  public Artist getArtist1() {
-    return artist1;
+  public int getTargetId() {
+    return targetId;
   }
 
-  public Artist getArtist2() {
-    return artist2;
+  public int getWeight() {
+    return weight;
   }
-
-  public int getNbMentions() {
-    return nbMentions;
-  }
-
-
 }
