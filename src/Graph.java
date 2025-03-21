@@ -37,7 +37,9 @@ public class Graph {
         int sourceId = Integer.parseInt(parts[0]);
         int targetId = Integer.parseInt(parts[1]);
         int weight = Integer.parseInt(parts[2]);
-        adjList.computeIfAbsent(sourceId, k -> new ArrayList<>()).add(new Mention(targetId, weight));
+        double invertedWeight = 1.0 / weight; // Inverser le poids
+        Mention mention = new Mention(sourceId, targetId, invertedWeight);
+        adjList.computeIfAbsent(sourceId, k -> new ArrayList<>()).add(mention);
       }
     } catch (IOException e) {
       e.printStackTrace();
@@ -56,7 +58,7 @@ public class Graph {
       distances.put(id, Double.MAX_VALUE);
     }
     distances.put(sourceId, 0.0);
-    priorityQueue.add(new Mention(sourceId, 0));
+    priorityQueue.add(new Mention(sourceId, sourceId, 0));
 
     while (!priorityQueue.isEmpty()) {
       Mention currentMention = priorityQueue.poll();
@@ -71,7 +73,7 @@ public class Graph {
         if (newDist < distances.get(neighborId)) {
           distances.put(neighborId, newDist);
           predecessors.put(neighborId, currentId);
-          priorityQueue.add(new Mention(neighborId, (int) newDist));
+          priorityQueue.add(new Mention(currentId, neighborId, newDist));
         }
       }
     }
@@ -95,7 +97,7 @@ public class Graph {
     }
     Collections.reverse(chemin);
 
-    System.out.println("Longueur du chemin : " + chemin.size());
+    System.out.println("Longueur du chemin : " + (chemin.size() - 1));
     System.out.println("Coût total du chemin : " + distances.get(destinationId));
     System.out.println("Chemin :");
     for (int id : chemin) {

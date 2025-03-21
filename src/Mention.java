@@ -1,17 +1,23 @@
 public class Mention {
+  private int sourceId;
   private int targetId;
-  private int weight;
+  private double weight;
 
-  public Mention(int targetId, int weight) {
+  public Mention(int sourceId, int targetId, double weight) {
+    this.sourceId = sourceId;
     this.targetId = targetId;
     this.weight = weight;
+  }
+
+  public int getSourceId() {
+    return sourceId;
   }
 
   public int getTargetId() {
     return targetId;
   }
 
-  public int getWeight() {
+  public double getWeight() {
     return weight;
   }
 }
