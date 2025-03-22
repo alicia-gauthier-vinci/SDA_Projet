@@ -51,31 +51,47 @@ public class Graph {
     int destinationId = trouverIdParNom(destination);
 
     Map<Integer, Integer> predecessors = new HashMap<>();
+    Map<Integer, Double> distances = new HashMap<>();
     Queue<Integer> queue = new LinkedList<>();
     Set<Integer> visited = new HashSet<>();
+
+    for (int id : artistes.keySet()) {
+      distances.put(id, Double.MAX_VALUE);
+    }
+    distances.put(sourceId, 0.0);
 
     queue.add(sourceId);
     visited.add(sourceId);
 
+    boolean pathFound = false;
+
     while (!queue.isEmpty()) {
       int currentId = queue.poll();
 
-      if (currentId == destinationId) break;
+      if (currentId == destinationId) {
+        pathFound = true;
+        break;
+      }
 
       for (Mention neighbor : adjList.getOrDefault(currentId, new ArrayList<>())) {
         int neighborId = neighbor.getTargetId();
         if (!visited.contains(neighborId)) {
           visited.add(neighborId);
           predecessors.put(neighborId, currentId);
+          distances.put(neighborId, distances.get(currentId) + 1); // Increment the distance by 1 for each step
           queue.add(neighborId);
         }
       }
     }
 
-    afficherCheminEtLongueur(sourceId, destinationId, predecessors);
+    if (pathFound) {
+      afficherCheminEtCout(sourceId, destinationId, predecessors, distances);
+    } else {
+      throw new RuntimeException("Aucun chemin entre " + source + " et " + destination);
+    }
   }
 
-  private void afficherCheminEtLongueur(int sourceId, int destinationId, Map<Integer, Integer> predecessors) {
+  private void afficherCheminEtCout(int sourceId, int destinationId, Map<Integer, Integer> predecessors, Map<Integer, Double> distances) {
     List<Integer> chemin = new ArrayList<>();
     for (Integer at = destinationId; at != null; at = predecessors.get(at)) {
       chemin.add(at);
@@ -83,6 +99,7 @@ public class Graph {
     Collections.reverse(chemin);
 
     System.out.println("Longueur du chemin : " + (chemin.size() - 1));
+    System.out.println("Coût total du chemin : " + distances.get(destinationId));
     System.out.println("Chemin :");
     for (int id : chemin) {
       System.out.println(artistes.get(id));
@@ -138,6 +155,7 @@ public class Graph {
       System.out.println(artistes.get(id));
     }
   }
+
   private int trouverIdParNom(String nom) {
     for (Artist artiste : artistes.values()) {
       if (artiste.getNom().equals(nom)) {
@@ -146,6 +164,4 @@ public class Graph {
     }
     throw new IllegalArgumentException("Artiste non trouvé : " + nom);
   }
-
-
 }
