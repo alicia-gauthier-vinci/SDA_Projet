@@ -51,17 +51,13 @@ public class Graph {
     int destinationId = trouverIdParNom(destination);
 
     Map<Integer, Integer> predecessors = new HashMap<>();
-    Map<Integer, Double> distances = new HashMap<>();
+    Map<Integer, Double> totalCost = new HashMap<>();
     Queue<Integer> queue = new LinkedList<>();
     Set<Integer> visited = new HashSet<>();
 
-    for (int id : artistes.keySet()) {
-      distances.put(id, Double.MAX_VALUE);
-    }
-    distances.put(sourceId, 0.0);
-
     queue.add(sourceId);
     visited.add(sourceId);
+    totalCost.put(sourceId, 0.0);
 
     boolean pathFound = false;
 
@@ -78,20 +74,20 @@ public class Graph {
         if (!visited.contains(neighborId)) {
           visited.add(neighborId);
           predecessors.put(neighborId, currentId);
-          distances.put(neighborId, distances.get(currentId) + 1); // Increment the distance by 1 for each step
+          totalCost.put(neighborId, totalCost.get(currentId) + neighbor.getWeight());
           queue.add(neighborId);
         }
       }
     }
 
     if (pathFound) {
-      afficherCheminEtCout(sourceId, destinationId, predecessors, distances);
+      afficherCheminEtCout(sourceId, destinationId, predecessors, totalCost);
     } else {
       throw new RuntimeException("Aucun chemin entre " + source + " et " + destination);
     }
   }
 
-  private void afficherCheminEtCout(int sourceId, int destinationId, Map<Integer, Integer> predecessors, Map<Integer, Double> distances) {
+  private void afficherCheminEtCout(int sourceId, int destinationId, Map<Integer, Integer> predecessors, Map<Integer, Double> totalCost) {
     List<Integer> chemin = new ArrayList<>();
     for (Integer at = destinationId; at != null; at = predecessors.get(at)) {
       chemin.add(at);
@@ -99,7 +95,7 @@ public class Graph {
     Collections.reverse(chemin);
 
     System.out.println("Longueur du chemin : " + (chemin.size() - 1));
-    System.out.println("Coût total du chemin : " + distances.get(destinationId));
+    System.out.println("Coût total du chemin : " + totalCost.get(destinationId));
     System.out.println("Chemin :");
     for (int id : chemin) {
       System.out.println(artistes.get(id));
