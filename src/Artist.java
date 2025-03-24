@@ -1,17 +1,17 @@
 public class Artist {
 
-  private int numero;
+  private int id;
   private String nom;
   private String categorie;
 
-  public Artist(int numero , String nom, String categorie) {
-    this.numero = numero;
+  public Artist(int id , String nom, String categorie) {
+    this.id = id;
     this.nom = nom;
     this.categorie = categorie;
   }
 
-  public int getNumero() {
-    return numero;
+  public int getId() {
+    return id;
   }
 
   public String getNom() {
@@ -21,5 +21,4 @@ public class Artist {
   public String getCategorie() {
     return categorie;
   }
-
 }
